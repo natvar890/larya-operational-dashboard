@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LARYA Operational Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #041F30 0%, #0a3347 100%);
+      color: white;
+      padding: 30px 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    button.active {
+      background: #041F30;
+      color: white;
+    }
+
+    button:not(.active) {
+      background: white;
+      color: #041F30;
+      border: 1px solid #ddd;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .funnel-chart {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .funnel-chart h2 {
+      font-size: 20px;
+      margin-bottom: 25px;
+      color: #041F30;
+    }
+
+    .funnel-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .funnel-stage {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .funnel-bar {
+      flex: 1;
+      background: #FE1637;
+      padding: 15px 20px;
+      border-radius: 6px;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .funnel-bar:hover {
+      background: #e01430;
+      box-shadow: 0 4px 12px rgba(254, 22, 55, 0.3);
+    }
+
+    .funnel-stage-label {
+      width: 140px;
+      font-weight: 600;
+      color: #041F30;
+      font-size: 14px;
+    }
+
+    .funnel-stats {
+      text-align: right;
+      min-width: 150px;
+      font-size: 13px;
+    }
+
+    .funnel-stats .count {
+      font-weight: 600;
+      color: #041F30;
+    }
+
+    .funnel-stats .conversion {
+      color: #666;
+      font-size: 12px;
+    }
+
+    .conversions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 25px;
+      padding-top: 25px;
+      border-top: 1px solid #eee;
+    }
+
+    .conversion-card {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 6px;
+      border-left: 4px solid #FE1637;
+    }
+
+    .conversion-card h3 {
+      font-size: 12px;
+      color: #666;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .conversion-rate {
+      font-size: 24px;
+      font-weight: 700;
+      color: #041F30;
+    }
+
+    .tables-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .table-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .table-card h3 {
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #041F30;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      background: #f5f7fa;
+      padding: 12px 10px;
+      text-align: left;
+      font-weight: 600;
+      color: #041F30;
+      border-bottom: 2px solid #FE1637;
+    }
+
+    td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    tr:hover {
+      background: #f9f9f9;
+    }
+
+    .forecast-card {
+      background: linear-gradient(135deg, #041F30 0%, #0a3347 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+
+    .forecast-card h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .forecast-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .forecast-metric {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 6px;
+      border-left: 3px solid #FE1637;
+    }
+
+    .forecast-metric-label {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .forecast-metric-value {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .legend {
+      font-size: 12px;
+      color: #666;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+    }
+
+    @media (max-width: 768px) {
+      .tables-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .funnel-stage {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .funnel-stats {
+        text-align: left;
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📊 LARYA Operational Dashboard</h1>
+      <p id="period-info">Loading data...</p>
+    </header>
+
+    <div class="controls">
+      <div class="btn-group">
+        <button class="active" onclick="setView('weekly')">📅 This Week</button>
+        <button onclick="setView('monthly')">📈 This Month</button>
+      </div>
+    </div>
+
+    <div class="funnel-chart">
+      <h2>Conversion Funnel</h2>
+      <div class="funnel-visual" id="funnel-visual">
+        <div class="no-data">Loading funnel data...</div>
+      </div>
+      <div class="conversions-grid" id="conversions-grid"></div>
+    </div>
+
+    <div class="forecast-card" id="forecast-card" style="display: none;">
+      <h2>📈 Revenue Forecast (Next Month)</h2>
+      <div class="forecast-metrics" id="forecast-metrics"></div>
+    </div>
+
+    <div class="tables-grid" id="tables-grid">
+      <div class="table-card">
+        <h3>👥 By Sales Rep</h3>
+        <table id="by-rep-table">
+          <thead>
+            <tr>
+              <th>Rep</th>
+              <th>Leads</th>
+              <th>Meeting%</th>
+              <th>Aprovado%</th>
+              <th>R$</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="5" class="no-data">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-card">
+        <h3>🤝 By Partner/Source</h3>
+        <table id="by-partner-table">
+          <thead>
+            <tr>
+              <th>Partner</th>
+              <th>Leads</th>
+              <th>Approval%</th>
+              <th>Emissão%</th>
+              <th>R$</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="5" class="no-data">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mock data - replace with real API calls
+    const mockData = {
+      weekly: {
+        period: 'Aug 12-18, 2026',
+        funnel: [
+          { stage: 'Lead Entrou', count: 47, conversion: null },
+          { stage: 'Reunião', count: 14, conversion: 30 },
+          { stage: 'Aprovado', count: 5, conversion: 36 },
+          { stage: 'Vistoria', count: 3, conversion: 60 },
+          { stage: 'Emissão', count: 2, conversion: 67 }
+        ],
+        conversions: {
+          'Lead Entrou → Reunião': 30,
+          'Reunião → Aprovado': 36,
+          'Aprovado → Vistoria': 60,
+          'Vistoria → Emissão': 67
+        },
+        byRep: [
+          { rep: 'Rhaíssa', leads: 18, meeting: 33, aprovado: 28, value: 520000 },
+          { rep: 'Carolina', leads: 12, meeting: 25, aprovado: 33, value: 280000 },
+          { rep: 'Leonardo', leads: 10, meeting: 40, aprovado: 30, value: 150000 },
+          { rep: 'maayan', leads: 7, meeting: 29, aprovado: 43, value: 0 }
+        ],
+        byPartner: [
+          { partner: 'G2 Imobiliária', leads: 18, approval: 39, emissao: 67, value: 450000 },
+          { partner: 'Revenda Mais', leads: 15, approval: 27, emissao: 0, value: 200000 },
+          { partner: 'Organic', leads: 10, approval: 20, emissao: 0, value: 100000 },
+          { partner: 'Fazendinha', leads: 4, approval: 25, emissao: 100, value: 100000 }
+        ],
+        forecast: {
+          aprovados: 12,
+          aprovado_value: 450000,
+          projected_emissoes: 10,
+          projected_value: 382500
+        }
+      },
+      monthly: {
+        period: 'August 2026',
+        funnel: [
+          { stage: 'Lead Entrou', count: 187, conversion: null },
+          { stage: 'Reunião', count: 60, conversion: 32 },
+          { stage: 'Aprovado', count: 18, conversion: 30 },
+          { stage: 'Vistoria', count: 10, conversion: 56 },
+          { stage: 'Emissão', count: 6, conversion: 60 }
+        ],
+        conversions: {
+          'Lead Entrou → Reunião': 32,
+          'Reunião → Aprovado': 30,
+          'Aprovado → Vistoria': 56,
+          'Vistoria → Emissão': 60
+        },
+        byRep: [
+          { rep: 'Rhaíssa', leads: 68, meeting: 35, aprovado: 33, value: 890000 },
+          { rep: 'Carolina', leads: 45, meeting: 31, aprovado: 36, value: 680000 },
+          { rep: 'Leonardo', leads: 42, meeting: 29, aprovado: 33, value: 420000 },
+          { rep: 'maayan', leads: 32, meeting: 31, aprovado: 20, value: 350000 }
+        ],
+        byPartner: [
+          { partner: 'G2 Imobiliária', leads: 65, approval: 32, emissao: 67, value: 1200000 },
+          { partner: 'Revenda Mais', leads: 52, approval: 27, emissao: 20, value: 680000 },
+          { partner: 'Organic', leads: 42, approval: 29, emissao: 43, value: 420000 },
+          { partner: 'Fazendinha', leads: 18, approval: 39, emissao: 72, value: 200000 }
+        ],
+        forecast: {
+          aprovados: 18,
+          aprovado_value: 850000,
+          projected_emissoes: 15,
+          projected_value: 722500
+        }
+      }
+    };
+
+    let currentView = 'weekly';
+
+    function setView(view) {
+      currentView = view;
+      document.querySelectorAll('.controls button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      renderDashboard();
+    }
+
+    function renderDashboard() {
+      const data = mockData[currentView];
+
+      // Update period info
+      document.getElementById('period-info').textContent = `${currentView === 'weekly' ? 'Week of' : 'Month of'} ${data.period}`;
+
+      // Render funnel
+      renderFunnel(data.funnel);
+
+      // Render conversions
+      renderConversions(data.conversions);
+
+      // Render tables
+      renderByRepTable(data.byRep);
+      renderByPartnerTable(data.byPartner);
+
+      // Render forecast
+      if (currentView === 'monthly') {
+        renderForecast(data.forecast);
+      } else {
+        document.getElementById('forecast-card').style.display = 'none';
+      }
+    }
+
+    function renderFunnel(funnel) {
+      const maxCount = Math.max(...funnel.map(f => f.count));
+      const html = funnel.map(f => {
+        const width = (f.count / maxCount) * 100;
+        const conversionText = f.conversion !== null ? `${f.conversion}%` : '';
+        return `
+          <div class="funnel-stage">
+            <div class="funnel-stage-label">${f.stage}</div>
+            <div class="funnel-bar" style="width: ${width}%">
+              ${f.count} deals
+            </div>
+            <div class="funnel-stats">
+              <div class="count">${f.count}</div>
+              ${conversionText ? `<div class="conversion">↓ ${conversionText}</div>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('funnel-visual').innerHTML = html;
+    }
+
+    function renderConversions(conversions) {
+      const html = Object.entries(conversions).map(([path, rate]) => `
+        <div class="conversion-card">
+          <h3>${path}</h3>
+          <div class="conversion-rate">${rate}%</div>
+        </div>
+      `).join('');
+
+      document.getElementById('conversions-grid').innerHTML = html;
+    }
+
+    function renderByRepTable(byRep) {
+      const html = byRep.map(rep => `
+        <tr>
+          <td>${rep.rep}</td>
+          <td>${rep.leads}</td>
+          <td>${rep.meeting}%</td>
+          <td>${rep.aprovado}%</td>
+          <td>R$${(rep.value / 1000).toFixed(0)}K</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('by-rep-table').querySelector('tbody').innerHTML = html;
+    }
+
+    function renderByPartnerTable(byPartner) {
+      const html = byPartner.map(partner => `
+        <tr>
+          <td>${partner.partner}</td>
+          <td>${partner.leads}</td>
+          <td>${partner.approval}%</td>
+          <td>${partner.emissao}%</td>
+          <td>R$${(partner.value / 1000).toFixed(0)}K</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('by-partner-table').querySelector('tbody').innerHTML = html;
+    }
+
+    function renderForecast(forecast) {
+      document.getElementById('forecast-card').style.display = 'block';
+      const html = `
+        <div class="forecast-metric">
+          <div class="forecast-metric-label">Current Aprovados</div>
+          <div class="forecast-metric-value">${forecast.aprovados}</div>
+        </div>
+        <div class="forecast-metric">
+          <div class="forecast-metric-label">Aprovado Value</div>
+          <div class="forecast-metric-value">R$${(forecast.aprovado_value / 1000).toFixed(0)}K</div>
+        </div>
+        <div class="forecast-metric">
+          <div class="forecast-metric-label">Projected Emissões</div>
+          <div class="forecast-metric-value">~${forecast.projected_emissoes}</div>
+        </div>
+        <div class="forecast-metric">
+          <div class="forecast-metric-label">Projected Revenue</div>
+          <div class="forecast-metric-value">R$${(forecast.projected_value / 1000).toFixed(0)}K</div>
+        </div>
+      `;
+
+      document.getElementById('forecast-metrics').innerHTML = html;
+    }
+
+    // Initial render
+    renderDashboard();
+  </script>
+</body>
+</html>

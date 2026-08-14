@@ -1,0 +1,26 @@
+{
+  "name": "larya-operational-dashboard",
+  "version": "2.0.0",
+  "description": "LARYA operational dashboard - weekly and monthly reports with conversion funnel analysis",
+  "main": "api/weekly.js",
+  "scripts": {
+    "test:weekly": "node api/weekly.js",
+    "test:monthly": "node api/monthly.js",
+    "dev": "vercel dev"
+  },
+  "keywords": [
+    "hubspot",
+    "slack",
+    "automation",
+    "sales",
+    "funnel",
+    "conversions",
+    "larya"
+  ],
+  "author": "Nathan Varda",
+  "license": "MIT",
+  "dependencies": {
+    "luxon": "^3.4.1"
+  },
+  "devDependencies": {}
+}

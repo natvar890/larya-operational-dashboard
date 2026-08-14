@@ -1,0 +1,49 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/weekly.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/monthly.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "dashboard.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/weekly",
+      "dest": "api/weekly.js"
+    },
+    {
+      "src": "/api/monthly",
+      "dest": "api/monthly.js"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "dashboard.html"
+    },
+    {
+      "src": "/",
+      "dest": "dashboard.html"
+    }
+  ],
+  "env": {
+    "HUBSPOT_API_KEY": "@hubspot_api_key",
+    "SLACK_WEBHOOK_URL": "@slack_webhook_url"
+  },
+  "crons": [
+    {
+      "path": "/api/weekly",
+      "schedule": "0 9 ? * FRI"
+    },
+    {
+      "path": "/api/monthly",
+      "schedule": "0 9 1 * ?"
+    }
+  ]
+}
