@@ -32,10 +32,6 @@
       "dest": "dashboard.html"
     }
   ],
-  "env": {
-    "HUBSPOT_API_KEY": "@hubspot_api_key",
-    "SLACK_WEBHOOK_URL": "@slack_webhook_url"
-  },
   "crons": [
     {
       "path": "/api/weekly",
