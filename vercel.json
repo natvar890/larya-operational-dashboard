@@ -35,11 +35,11 @@
 "crons": [
     {
       "path": "/api/weekly",
-      "schedule": "0 9 * * 5"
+      "schedule": "0 12 * * 5"
     },
     {
       "path": "/api/monthly",
-      "schedule": "0 9 1 * *"
+      "schedule": "0 12 1 * *"
     }
   ]
       "path": "/api/monthly",
